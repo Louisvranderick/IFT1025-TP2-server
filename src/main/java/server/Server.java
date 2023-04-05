@@ -91,7 +91,26 @@ public class Server {
      @param arg la session pour laquelle on veut récupérer la liste des cours
      */
     public void handleLoadCourses(String arg) {
-        // TODO: implémenter cette méthode
+        String session = "automne";
+        final String fichierCours = "./Users/louisvranderick/Desktop/H2023/IFT1025/IFT1025-TP2-server/src/main/java/server/data/cours.txt";
+
+        try {
+            FileReader cours = new FileReader(fichierCours);
+            BufferedReader reader = new BufferedReader(cours);
+            String ligne;
+            while ((ligne = reader.readLine())!= null) {
+                String[] partie = ligne.split(" ");
+                if (partie[2].equalsIgnoreCase(session))
+                    System.out.println(ligne);
+            }
+            reader.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Path au fichier incorrect");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     /**
@@ -100,7 +119,26 @@ public class Server {
      La méthode gére les exceptions si une erreur se produit lors de la lecture de l'objet, l'écriture dans un fichier ou dans le flux de sortie.
      */
     public void handleRegistration() {
-        // TODO: implémenter cette méthode
+        try {
+            RegistrationForm registration = (RegistrationForm) objectInputStream.readObject();
+            File file = new File("inscription.txt");
+            FileOutputStream Ins = new FileOutputStream(file, true);
+            ObjectOutputStream Output = new ObjectOutputStream(Ins);
+
+            Output.writeObject(registration);
+            Output.close();
+            Ins.close();
+
+            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+            System.out.println("enregistrement fait avec succes");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
     }
 }
 
