@@ -95,20 +95,34 @@ public class Server {
      La méthode gère les exceptions si une erreur se produit lors de la lecture du fichier ou de l'écriture de l'objet dans le flux.
      @param arg la session pour laquelle on veut récupérer la liste des cours
      */
+
+    /**
+     * Cette fonction prend comme argument une session du client et lui renvoie tous les cours disponible qui correspond
+     * avec la session demande
+     * On utilise FileReader et BufferedReader pour lire notre fichier cours.txt qui contient le contenu de tous les cours
+     * ligne par ligne
+     * Avec buffered reader on créé une loop qui va regarder chaque ligne de notre fichier cours en utilisant split
+     * on peut diviser chaque ligne et obtenir seulement le string de la session.
+     * Chaque ligne et store dans la variable ligne et par la suite split dans le tableau partie. c'est comme sa qu'on
+     * verifie si notre arg et egale a la session et si oui on l'ajoute a notre arraylist
+     *
+     */
     public void handleLoadCourses(String arg) {
-        String session = "automne";
+        String session = arg;
         final String fichierCours = "./Users/louisvranderick/Desktop/H2023/IFT1025/IFT1025-TP2-server/src/main/java/server/data/cours.txt";
 
         try {
             FileReader cours = new FileReader(fichierCours);
             BufferedReader reader = new BufferedReader(cours);
             String ligne;
+            ArrayList<String> listeDeCours = new ArrayList<>();
             while ((ligne = reader.readLine())!= null) {
                 String[] partie = ligne.split(" ");
                 if (partie[2].equalsIgnoreCase(session))
-                    System.out.println(ligne);
+                    listeDeCours.add(ligne);
             }
             reader.close();
+            objectOutputStream.writeObject(listeDeCours);
 
         } catch (FileNotFoundException e) {
             System.out.println("Path au fichier incorrect");
