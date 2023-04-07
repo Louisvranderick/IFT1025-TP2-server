@@ -1,8 +1,13 @@
 package server;
 
 import javafx.util.Pair;
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.io.IOException;
+import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -120,12 +125,11 @@ public class Server {
      */
     public void handleRegistration() {
         try {
-            RegistrationForm registration = (RegistrationForm) objectInputStream.readObject();
             File file = new File("inscription.txt");
             FileOutputStream Ins = new FileOutputStream(file, true);
             ObjectOutputStream Output = new ObjectOutputStream(Ins);
 
-            Output.writeObject(registration);
+            Output.writeObject(file);
             Output.close();
             Ins.close();
 
@@ -133,12 +137,10 @@ public class Server {
             System.out.println("enregistrement fait avec succes");
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
 
 
     }
     }
-}
+
 
