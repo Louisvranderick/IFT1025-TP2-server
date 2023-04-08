@@ -15,6 +15,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
 public class Server {
 
     public final static String REGISTER_COMMAND = "INSCRIRE";
@@ -108,18 +109,19 @@ public class Server {
      *
      */
     public void handleLoadCourses(String arg) {
-        String session = arg;
-        final String fichierCours = "./Users/louisvranderick/Desktop/H2023/IFT1025/IFT1025-TP2-server/src/main/java/server/data/cours.txt";
-
+        final String fichierCours = "src/main/java/server/data/cours.txt";
         try {
             FileReader cours = new FileReader(fichierCours);
             BufferedReader reader = new BufferedReader(cours);
             String ligne;
             ArrayList<String> listeDeCours = new ArrayList<>();
-            while ((ligne = reader.readLine())!= null) {
-                String[] partie = ligne.split(" ");
-                if (partie[2].equalsIgnoreCase(session))
+            while ((ligne = reader.readLine()) != null) {// Add this line to print the entire line
+                String[] partie = ligne.split("\t");
+                if (partie[2].equalsIgnoreCase(arg))
                     listeDeCours.add(ligne);
+            }
+            for (String element : listeDeCours) {
+                System.out.println(element);
             }
             reader.close();
             objectOutputStream.writeObject(listeDeCours);
