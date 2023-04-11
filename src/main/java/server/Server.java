@@ -1,6 +1,9 @@
 package server;
 
 import javafx.util.Pair;
+import server.models.Course;
+import server.models.RegistrationForm;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -114,16 +117,16 @@ public class Server {
             FileReader cours = new FileReader(fichierCours);
             BufferedReader reader = new BufferedReader(cours);
             String ligne;
-            ArrayList<String> listeDeCours = new ArrayList<>();
-            while ((ligne = reader.readLine()) != null) {// Add this line to print the entire line
+            ArrayList<Course> listeDeCours = new ArrayList<>();
+            while ((ligne = reader.readLine()) != null) {
                 String[] partie = ligne.split("\t");
-                if (partie[2].equalsIgnoreCase(arg))
-                    listeDeCours.add(ligne);
-            }
-            for (String element : listeDeCours) {
-                System.out.println(element);
+                if (partie[2].equalsIgnoreCase(arg)) {
+                    Course cour = new Course(partie[1], partie[0], partie[2]);
+                    listeDeCours.add(cour);
+                }
             }
             reader.close();
+
             objectOutputStream.writeObject(listeDeCours);
 
         } catch (FileNotFoundException e) {
@@ -140,18 +143,22 @@ public class Server {
      La méthode gére les exceptions si une erreur se produit lors de la lecture de l'objet, l'écriture dans un fichier ou dans le flux de sortie.
      */
     public void handleRegistration() {
+        String path2 = "src/main/java/server/data/inscription.txt";
         try {
-            File file = new File("inscription.txt");
+            ArrayList<RegistrationForm> Inscrit = (ArrayList<RegistrationForm>) objectInputStream.readObject();
+
+            File file = new File(path2);
             FileOutputStream Ins = new FileOutputStream(file, true);
             ObjectOutputStream Output = new ObjectOutputStream(Ins);
-
             Output.writeObject(file);
             Output.close();
             Ins.close();
 
-            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
             System.out.println("enregistrement fait avec succes");
         } catch (IOException e) {
+            throw new RuntimeException(e);
+
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
