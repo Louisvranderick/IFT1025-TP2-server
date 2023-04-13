@@ -4,15 +4,7 @@ import javafx.util.Pair;
 import server.models.Course;
 import server.models.RegistrationForm;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -127,6 +119,7 @@ public class Server {
             }
             reader.close();
 
+
             objectOutputStream.writeObject(listeDeCours);
 
         } catch (FileNotFoundException e) {
@@ -143,21 +136,22 @@ public class Server {
      La méthode gére les exceptions si une erreur se produit lors de la lecture de l'objet, l'écriture dans un fichier ou dans le flux de sortie.
      */
     public void handleRegistration() {
+        System.out.println("testing");
         String path2 = "src/main/java/server/data/inscription.txt";
         try {
-            ArrayList<RegistrationForm> Inscrit = (ArrayList<RegistrationForm>) objectInputStream.readObject();
-
-            File file = new File(path2);
-            FileOutputStream Ins = new FileOutputStream(file, true);
-            ObjectOutputStream Output = new ObjectOutputStream(Ins);
-            Output.writeObject(file);
-            Output.close();
-            Ins.close();
-
-            System.out.println("enregistrement fait avec succes");
+            RegistrationForm registrationForm = (RegistrationForm) objectInputStream.readObject();
+            FileWriter fileWriter = new FileWriter(path2, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            Course regCourse = registrationForm.getCourse();
+            String content = "\n" + regCourse.getSession() + " " + regCourse.getCode() + " " + registrationForm.getMatricule() + "\t" + registrationForm.getNom() + "\t" + registrationForm.getPrenom()+ "\t" + registrationForm.getEmail() ;
+            bufferedWriter.write(content);
+            bufferedWriter.close();
+            fileWriter.close();
+            System.out.println(content);
+            String success = "Enregistrement fait avec succès";
+            objectOutputStream.writeObject(success);
         } catch (IOException e) {
             throw new RuntimeException(e);
-
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
