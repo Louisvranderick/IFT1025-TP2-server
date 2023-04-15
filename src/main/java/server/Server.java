@@ -90,19 +90,9 @@ public class Server {
      Ensuite, elle renvoie la liste des cours pour une session au client en utilisant l'objet 'objectOutputStream'.
      La méthode gère les exceptions si une erreur se produit lors de la lecture du fichier ou de l'écriture de l'objet dans le flux.
      @param arg la session pour laquelle on veut récupérer la liste des cours
+     @exception FileNotFoundException, si jamais on trouve pas le fichier
      */
 
-    /**
-     * Cette fonction prend comme argument une session du client et lui renvoie tous les cours disponible qui correspond
-     * avec la session demande
-     * On utilise FileReader et BufferedReader pour lire notre fichier cours.txt qui contient le contenu de tous les cours
-     * ligne par ligne
-     * Avec buffered reader on créé une loop qui va regarder chaque ligne de notre fichier cours en utilisant split
-     * on peut diviser chaque ligne et obtenir seulement le string de la session.
-     * Chaque ligne et store dans la variable ligne et par la suite split dans le tableau partie. c'est comme sa qu'on
-     * verifie si notre arg et egale a la session et si oui on l'ajoute a notre arraylist
-     *
-     */
     public void handleLoadCourses(String arg) {
         final String fichierCours = "src/main/java/server/data/cours.txt";
         try {
