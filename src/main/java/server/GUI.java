@@ -45,6 +45,7 @@ public class GUI extends Application{
         // TODO utiliser ca avec le bouton charger pour load le information des cours dans le tableau
 
 
+        // TODO un autre HBOX dans lequel seront les boutons de la gauche de l'application
         // Création du dropdown list button pour le choix de la session
         ComboBox<String> ChoixSession = new ComboBox<>();
         ChoixSession.setItems(FXCollections.observableArrayList(
