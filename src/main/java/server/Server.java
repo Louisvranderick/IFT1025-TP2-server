@@ -21,12 +21,22 @@ public class Server {
     private ObjectOutputStream objectOutputStream;
     private final ArrayList<EventHandler> handlers;
 
+    /**
+     * Crée le serveur avec le port mit en argument, Utilisé dans la classe serverlauncher pour demarré le serveur
+     *
+     * @param port
+     * @throws IOException
+     */
     public Server(int port) throws IOException {
         this.server = new ServerSocket(port, 1);
         this.handlers = new ArrayList<EventHandler>();
         this.addEventHandler(this::handleEvents);
     }
 
+    /**
+     *
+     * @param h
+     */
     public void addEventHandler(EventHandler h) {
         this.handlers.add(h);
     }

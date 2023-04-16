@@ -1,24 +1,22 @@
 package server;
 
-import javafx.geometry.Orientation;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
-import javafx.scene.control.SplitPane;
 import javafx.application.Application;
-import javafx.scene.control.TextField;
+import javafx.geometry.Orientation;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-public class GUI {
- // TODO Manque du code ici pour le extends du server pour le class
+public class test extends Application {
 
-    //@Override
-    public void start (Stage primaryStage) {
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
         // Création des deux scènes avec leur contenu respectif
         VBox ListeDesCours = new VBox(new Label("Liste des cours"));
         HBox FormulaireDInscription = new HBox(new Label("Formulaire d'inscription"));
@@ -67,7 +65,4 @@ public class GUI {
         primaryStage.setTitle("Inscription UdeM");
         primaryStage.show();
     }
-
-
-
 }
