@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 
 
 public class GUI extends Application{
@@ -20,6 +21,8 @@ public class GUI extends Application{
         // Création des deux scènes avec leur contenu respectif
         VBox ListeDesCours = new VBox(new Label("Liste des cours"));
         HBox FormulaireDInscription = new HBox(new Label("Formulaire d'inscription"));
+        ListeDesCours.setAlignment(Pos.CENTER);
+        FormulaireDInscription.setAlignment(Pos.CENTER);
 
         // Création d'un SplitPane horizontal
         SplitPane splitPane = new SplitPane();
