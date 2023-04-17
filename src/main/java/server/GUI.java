@@ -43,6 +43,7 @@ public class GUI {
         TableColumn<String, String> cours = new TableColumn<>("Cours");
 
         table.getColumns().addAll(code, cours);
+
         // TODO pour ajouter des items dans le table on fait table.getItems().addAll( "row 1 data 1, row 1 data 2, etc.);
         // TODO utiliser ca avec le bouton charger pour load le information des cours dans le tableau
         // TODO dropdown list pour choisir la session avec options: Hiver, Automne, Ete

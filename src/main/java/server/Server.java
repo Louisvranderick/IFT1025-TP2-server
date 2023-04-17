@@ -41,12 +41,22 @@ public class Server {
         this.handlers.add(h);
     }
 
+    /**
+     * Utiliser pour distribué les commandes du serveurs au bons handlers
+     * @param cmd
+     * @param arg
+     */
     private void alertHandlers(String cmd, String arg) {
         for (EventHandler h : this.handlers) {
             h.handle(cmd, arg);
         }
     }
 
+    /**
+     * Commence le server et imprime connecté au client quand un client se connect
+     * créé un objectInputStream et objectOutputStream pour pouvoir communiqué avec le client
+     * nous envoie a la fonction listen() qui ecoute les commandes et par la suite a la fonction disconnect() qui ferme le serveur
+     */
     public void run() {
         while (true) {
             try {
@@ -63,6 +73,11 @@ public class Server {
         }
     }
 
+    /**
+     * prend la commande envoyé du client et la sépare en une paire avec la commande et l'argument
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public void listen() throws IOException, ClassNotFoundException {
         String line;
         if ((line = this.objectInputStream.readObject().toString()) != null) {
@@ -86,6 +101,12 @@ public class Server {
         client.close();
     }
 
+    /**
+     * Envoie la commande du client "CHARGER arg" a la fonction handleLoadCourses() et la commande
+     * "INSCRIRE" a la fonction handleRegistration()
+     * @param cmd
+     * @param arg
+     */
     public void handleEvents(String cmd, String arg) {
         if (cmd.equals(REGISTER_COMMAND)) {
             handleRegistration();
