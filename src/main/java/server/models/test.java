@@ -6,6 +6,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -31,7 +32,7 @@ public class test extends Application {
     public void start(Stage primaryStage) {
         // Création des deux scènes avec leur contenu respectif
         VBox ListeDesCours = new VBox(new Label("Liste des cours"));
-        HBox FormulaireDInscription = new HBox(new Label("Formulaire d'inscription"));
+        HBox FormulaireDInscription = new HBox();
 
         // Création d'un SplitPane horizontal
         SplitPane splitPane = new SplitPane();
@@ -48,6 +49,8 @@ public class test extends Application {
         // Création du tableau qui affiche les cours disponibles
         TableView<Course> table = new TableView<>();
         ListeDesCours.getChildren().add(table);
+
+        ListeDesCours.setPadding(new Insets(20, 20, 20, 20));
 
         TableColumn<Course, String> code = new TableColumn<>("Code");
         TableColumn<Course, String> cours = new TableColumn<>("Cours");
@@ -86,6 +89,9 @@ public class test extends Application {
         ListeDesCours.getChildren().add(buttonGroup);
         ListeDesCours.setAlignment(Pos.CENTER);
 
+        buttonGroup.setSpacing(10);
+        buttonGroup.setPadding(new Insets(10, 10, 10, 10));
+
         GridPane formulaire = new GridPane();
         FormulaireDInscription.getChildren().add(formulaire);
 
@@ -116,6 +122,7 @@ public class test extends Application {
         VBox formWrapper = new VBox(10, formTitle, formulaire, registerButton);
         formWrapper.setAlignment(Pos.CENTER);
         FormulaireDInscription.getChildren().add(formWrapper);
+        FormulaireDInscription.setAlignment(Pos.CENTER);
 
         Label errorMessageLabel = new Label();
         errorMessageLabel.setStyle("-fx-text-fill: red;"); // Set error message text color to red
