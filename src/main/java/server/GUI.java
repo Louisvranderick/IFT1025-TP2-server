@@ -26,8 +26,8 @@ public class GUI extends Application{
         splitPane.setOrientation(Orientation.HORIZONTAL);
 
         splitPane.getItems().addAll(ListeDesCours, FormulaireDInscription);
-        ListeDesCours.setPrefWidth(200);
-        FormulaireDInscription.setPrefWidth(200);
+        ListeDesCours.setPrefWidth(400);
+        FormulaireDInscription.setPrefWidth(400);
 
         Scene scene = new Scene(splitPane, 400, 300);
 
@@ -39,6 +39,7 @@ public class GUI extends Application{
 
         TableColumn<String, String> code = new TableColumn<>("Code");
         TableColumn<String, String> cours = new TableColumn<>("Cours");
+        table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
         table.getColumns().addAll(code, cours);
 

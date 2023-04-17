@@ -39,8 +39,8 @@ public class test extends Application {
         splitPane.setOrientation(Orientation.HORIZONTAL);
 
         splitPane.getItems().addAll(ListeDesCours, FormulaireDInscription);
-        ListeDesCours.setPrefWidth(200);
-        FormulaireDInscription.setPrefWidth(200);
+        ListeDesCours.setPrefWidth(500);
+        FormulaireDInscription.setPrefWidth(500);
 
         Scene scene = new Scene(splitPane, 600, 300);
 
@@ -54,6 +54,7 @@ public class test extends Application {
 
         TableColumn<Course, String> code = new TableColumn<>("Code");
         TableColumn<Course, String> cours = new TableColumn<>("Cours");
+        table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
         code.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Course, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Course, String> p) {
