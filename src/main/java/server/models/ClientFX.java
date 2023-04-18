@@ -19,10 +19,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 
 
-public class test extends Application {
+public class ClientFX extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -45,8 +44,6 @@ public class test extends Application {
         Scene scene = new Scene(splitPane, 600, 300);
 
 
-
-        // Création du tableau qui affiche les cours disponibles
         TableView<Course> table = new TableView<>();
         ListeDesCours.getChildren().add(table);
 
@@ -55,6 +52,9 @@ public class test extends Application {
         TableColumn<Course, String> code = new TableColumn<>("Code");
         TableColumn<Course, String> cours = new TableColumn<>("Cours");
         table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+
+        code.setPrefWidth(100);
+        cours.setPrefWidth(150);
 
         code.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Course, String>, ObservableValue<String>>() {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Course, String> p) {
@@ -70,20 +70,12 @@ public class test extends Application {
 
         table.getColumns().addAll(code, cours);
 
-
-        // TODO pour ajouter des items dans le table on fait table.getItems().addAll( "row 1 data 1, row 1 data 2, etc.);
-        // TODO utiliser ca avec le bouton charger pour load le information des cours dans le tableau
-        // TODO dropdown list pour choisir la session avec options: Hiver, Automne, Ete
-
-
-
-
         HBox buttonGroup = new HBox();
         Button charger = new Button("Charger");
 
         ComboBox<String> Session = new ComboBox<>();
         Session.getItems().addAll("Hiver", "Automne", "Ete");
-        Session.setPromptText("Saison");
+        Session.setPromptText("Session");
 
         buttonGroup.getChildren().addAll(Session, charger);
         buttonGroup.setAlignment(Pos.CENTER);
@@ -130,11 +122,6 @@ public class test extends Application {
         GridPane.setConstraints(errorMessageLabel, 1, 5);
         formulaire.getChildren().add(errorMessageLabel);
 
-        // TODO bouton envoyer
-
-
-
-
 
         charger.setOnAction(event -> {
             String session = Session.getValue();
@@ -161,20 +148,18 @@ public class test extends Application {
             String matricule = matriculeField.getText();
             Course selectedCourse = table.getSelectionModel().getSelectedItem();
 
-            List<String> errors = validateInput(firstName, lastName, email, matricule);
+            ArrayList<String> errors = validateInput(firstName, lastName, email, matricule);
 
             if (errors.isEmpty()) {
                 try {
                     register(firstName, lastName, email, matricule, selectedCourse);
-                    errorMessageLabel.setText(""); // Clear error message on successful registration
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
             } else {
-                String errorMessage = String.join("\n", errors);
-                errorMessageLabel.setText(errorMessage);
+                showErrorPopup(errors);
             }
 
         });
@@ -182,6 +167,28 @@ public class test extends Application {
 
     }
 
+    private void showErrorPopup(ArrayList<String> messages) {
+        StringBuilder messageBuilder = new StringBuilder();
+        for (String message : messages) {
+            messageBuilder.append(message).append("\n");
+        }
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(messageBuilder.toString());
+        alert.showAndWait();
+    }
+
+
+    /**
+     * cette fonction envoie une requête au serveur après avoir établi la connection puis une fois que la réponse du
+     * serveur a été reçue, met le tableau à jour avec l'information correspondante
+     * @param session la Session choisis par l'utilisateur
+     * @param table la table de cours qu'on mets sur le interface
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void loadCourses(String session, TableView<Course> table) throws IOException, ClassNotFoundException {
         Socket cS;
         ObjectOutputStream objectOutputStream;
@@ -207,6 +214,18 @@ public class test extends Application {
         cS.close();
     }
 
+
+    /**
+     * fonction qui envoie l'information entrée par l'utilisateur dans le formulaire d'inscription et du cours choisi
+     * en se connectant au serveur
+     * @param prenom
+     * @param nom
+     * @param courriel
+     * @param matricule
+     * @param cours
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void register(String prenom, String nom, String courriel, String matricule, Course cours) throws IOException, ClassNotFoundException {
         Socket cS;
         ObjectOutputStream objectOutputStream;
@@ -230,23 +249,47 @@ public class test extends Application {
         cS.close();
     }
 
-    private List<String> validateInput(String firstName, String lastName, String email, String matricule) {
+    /**
+     * Fonction qui verifie si les input sont valide et pas vide. Verifie si le email est bien formatte et que la matricule
+     * a bien 8 chiffre.
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @param matricule
+     * @return un arraylist avec toute les erreurs comme element
+     */
+    private ArrayList<String> validateInput(String firstName, String lastName, String email, String matricule) {
         ArrayList<String> errors = new ArrayList<>();
 
         if (firstName.isEmpty()) {
-            errors.add("First name is required.");
+            errors.add("Pas de prenom inscrit");
         }
         if (lastName.isEmpty()) {
-            errors.add("Last name is required.");
+            errors.add("Pas de nom de famille inscrit");
         }
+
+        String[] splitEmail = email.split("@");
         if (email.isEmpty()) {
-            errors.add("Email is required.");
-        } else if (!email.matches("\\S+@\\S+\\.\\S+")) {
-            errors.add("Invalid email format.");
+            errors.add("Courriel est requis");
+        } else if (splitEmail.length == 2) {
+            String[] complete = email.split("");
+            String[] splitAdress = splitEmail[1].split("\\.");
+            if (complete[complete.length - 1] == "@") {
+                errors.add("l'adresse fini par un @, veuillez saisir une adresse courriel valide");
+            } else  if (splitAdress.length <= 1 ) {
+                errors.add("manque au moins un point, veuillez saisir une adresse courriel valide");
+            } else if (splitAdress.length > 2 ) {
+                errors.add("trop de point, veuillez saisir une adresse courriel valide");
+            }
+        } else if (splitEmail.length <= 1 ){
+            errors.add("Veuillez inscrire au moins un @, veuillez saisir une adresse courriel valide");
+        } else {
+            errors.add("trop de @!, veuillez saisir une adresse courriel valide");
         }
+
         if (matricule.isEmpty()) {
-            errors.add("Matricule is required.");
-        } else if (!matricule.matches("\\d{8}")) {
+            errors.add("Pas de matricule inscrit");
+        } else if (matricule.length() != 8) {
             errors.add("la matricule doit avoir 8 chiffre");
         }
 

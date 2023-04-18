@@ -6,6 +6,7 @@ import server.models.RegistrationForm;
 
 import java.io.*;
 import java.net.ServerSocket;
+import java.nio.file.Path;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +25,7 @@ public class Server {
     /**
      * Crée le serveur avec le port mit en argument, Utilisé dans la classe serverlauncher pour demarré le serveur
      *
-     * @param port
+     * @param port le chiffre du port que l'on utilisé
      * @throws IOException
      */
     public Server(int port) throws IOException {
@@ -33,18 +34,14 @@ public class Server {
         this.addEventHandler(this::handleEvents);
     }
 
-    /**
-     *
-     * @param h
-     */
     public void addEventHandler(EventHandler h) {
         this.handlers.add(h);
     }
 
     /**
      * Utiliser pour distribué les commandes du serveurs au bons handlers
-     * @param cmd
-     * @param arg
+     * @param cmd la commande qui est sois "CHARGER" ou "INSCRIRE"
+     * @param arg L'argument qui viens avec la fonction, seulement quelque chose dans la fonction CHARGER
      */
     private void alertHandlers(String cmd, String arg) {
         for (EventHandler h : this.handlers) {
@@ -55,7 +52,8 @@ public class Server {
     /**
      * Commence le server et imprime connecté au client quand un client se connect
      * créé un objectInputStream et objectOutputStream pour pouvoir communiqué avec le client
-     * nous envoie a la fonction listen() qui ecoute les commandes et par la suite a la fonction disconnect() qui ferme le serveur
+     * nous envoie a la fonction listen() qui ecoute les commandes et par la suite a la fonction disconnect()
+     * qui ferme le serveur. Fonction qui est utilisé pour controllé un peu le deroulement de tout le serveur
      */
     public void run() {
         while (true) {
@@ -88,6 +86,12 @@ public class Server {
         }
     }
 
+    /**
+     * fonction utilisée pour prendre un input du command line et le transformer en pair pour ensuite le return et
+     * le feed au logiciel
+     * @param line
+     * @return
+     */
     public Pair<String, String> processCommandLine(String line) {
         String[] parts = line.split(" ");
         String cmd = parts[0];
@@ -95,6 +99,10 @@ public class Server {
         return new Pair<>(cmd, args);
     }
 
+    /**
+     * On arrete la connection entre le client et serveur et on ferme tout
+     * @throws IOException
+     */
     public void disconnect() throws IOException {
         objectOutputStream.close();
         objectInputStream.close();
@@ -121,11 +129,10 @@ public class Server {
      Ensuite, elle renvoie la liste des cours pour une session au client en utilisant l'objet 'objectOutputStream'.
      La méthode gère les exceptions si une erreur se produit lors de la lecture du fichier ou de l'écriture de l'objet dans le flux.
      @param arg la session pour laquelle on veut récupérer la liste des cours
-     @exception FileNotFoundException, si jamais on trouve pas le fichier
      */
 
     public void handleLoadCourses(String arg) {
-        final String fichierCours = "src/main/java/server/data/cours.txt";
+        final String fichierCours = String.valueOf(Path.of("src/main/java/server/data/cours.txt").toAbsolutePath());
         try {
             FileReader cours = new FileReader(fichierCours);
             BufferedReader reader = new BufferedReader(cours);
@@ -145,6 +152,7 @@ public class Server {
 
         } catch (FileNotFoundException e) {
             System.out.println("Path au fichier incorrect");
+            System.out.println(fichierCours);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -158,7 +166,7 @@ public class Server {
      */
     public void handleRegistration() {
         System.out.println("testing");
-        String path2 = "src/main/java/server/data/inscription.txt";
+        String path2 = String.valueOf(Path.of("src/main/java/server/data/inscription.txt").toAbsolutePath());
         try {
             RegistrationForm registrationForm = (RegistrationForm) objectInputStream.readObject();
             FileWriter fileWriter = new FileWriter(path2, true);
